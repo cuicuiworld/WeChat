@@ -23,7 +23,7 @@ function Wechat(options) {
             }
 
             if (me.isValidAccessToken(data)) {
-                Promise.resolve(data)
+                return Promise.resolve(data)
             } else {
                 return me.updateAccessToken()
             }

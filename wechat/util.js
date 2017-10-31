@@ -64,3 +64,23 @@ exports.formatMessage = function (xml) {
         })
     })
 }
+
+exports.tpl = function (content, message) {
+    var info = {}
+    var type = 'text'
+    var fromUserName = message.FromUserName
+    var toUserName = message.ToUserName
+
+    if (Array.isArray(content)) {
+        type = 'news'
+    }
+
+    type = content.type || type
+    info.content = content
+    info.createTime = new Date().getTime()
+    info.MsgType = type
+    info.toUserName = fromUserName
+    info.fromUserName = toUserName
+
+    return tpl.compiled(info)
+}

@@ -2,8 +2,8 @@
 
 var sha1 = require('sha1')
 var getRawBody = require('raw-body')//raw-body可以把这个js上的request对象去拼装它的数据最终拿到一个buffer的xml数据
-var util = require('util')
-var Wechat = require('wechat')
+var util = require('./util')
+var Wechat = require('./wechat')
 
 module.exports = function (options) {
     var wechat = new Wechat(options)
@@ -42,7 +42,7 @@ module.exports = function (options) {
             console.log(data.toString())            
 
             var content = yield util.parseXMLAsync(data)
-            console.log(content)
+            console.log(content+'//////////////////////////////////////////////////////////')
 
             var message = util.formatMessage(content.xml)
             console.log(message)
