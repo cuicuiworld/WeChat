@@ -42,7 +42,7 @@ module.exports = function (options) {
             console.log(data.toString())            
 
             var content = yield util.parseXMLAsync(data)
-            console.log(content+'//////////////////////////////////////////////////////////')
+            console.log(data+'//////////////////////////////////////////////////////////')
 
             var message = util.formatMessage(content.xml)
             console.log(message)
