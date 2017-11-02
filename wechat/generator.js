@@ -5,7 +5,8 @@ var getRawBody = require('raw-body')//raw-body可以把这个js上的request对�
 var util = require('./util')
 var Wechat = require('./wechat')
 
-module.exports = function (options) {
+module.exports = function (options, handler) {
+    //我们在传入这个中间件的时候，首先初始化这个 Wechat，获取到一个实例，后面使用
     var wechat = new Wechat(options)
 
     return function* (next) {
@@ -39,24 +40,17 @@ module.exports = function (options) {
                 limit:'1mb',
                 encoding:this.chartset
             })
-            console.log(data.toString())            
+            // console.log(data.toString())            
 
-            var content = yield util.parseXMLAsync(data)
-            console.log(data+'//////////////////////////////////////////////////////////')
+            var content = yield util.parseXMLAsync(data)    //解析xml
+            // console.log(content+'----------------')
 
-            var message = util.formatMessage(content.xml)
-            console.log(message)
+            var message = util.formatMessage(content.xml)   //格式化xml
+            // console.log(message+'//////')
 
-            if(message.MsgType === 'event'){
-                if(message.Event === 'subscribe'){
-                    var now = new Date().getTime()
-
-                    me.status = 200
-                    me.type = 'application/xml'
-                    me.body = ''
-                    return
-                }
-            }
+            this.weixin = message
+            yield handler.call(this, next)
+            wechat.reply.call(this)
         }
     }
 }

@@ -2,8 +2,8 @@
 
 var Promise = require('bluebird')
 var request = Promise.promisify(require('request')) //对request进行封装，request本没有promise
-
 var prefix = 'https://api.weixin.qq.com/cgi-bin/'
+var util = require('./util')
 var api = {
     accessToken: prefix + 'token?grant_type=client_credential'
 }
@@ -33,9 +33,15 @@ function Wechat(options) {
             me.expires_in = data.expires_in //过期时间
 
             return me.saveAccessToken(data)
+
+            // me.saveAccessToken(data)
+            // return Promise.resolve(data)
         })
 }
 
+/**
+ * 验证access_token是否有效
+ */
 Wechat.prototype.isValidAccessToken = function (data) {
     if (!data || !data.access_token || !data.expires_in) {
         return false
@@ -49,6 +55,9 @@ Wechat.prototype.isValidAccessToken = function (data) {
     }
 }
 
+/**
+ * 过期后重新获取access_token
+ */
 Wechat.prototype.updateAccessToken = function () {
     var appID = this.appID
     var appSecret = this.appSecret
@@ -69,6 +78,21 @@ Wechat.prototype.updateAccessToken = function () {
         })
     })
 
+}
+
+/**
+ * 渲染模板
+ */
+Wechat.prototype.reply = function () {
+
+    var content = this.body
+    var message = this.weixin
+    console.log(content + '*********************')
+    var xml = util.tpl(content, message)
+
+    this.status = 200
+    this.type = 'application/xml'
+    this.body = xml
 }
 
 module.exports = Wechat

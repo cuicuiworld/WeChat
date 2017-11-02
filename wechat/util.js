@@ -2,6 +2,7 @@
 
 var xml2js = require('xml2js')
 var Promise = require('bluebird')
+var tpl = require('./tpl');
 
 exports.parseXMLAsync = function (xml) {
     return new Promise(function (resolve, reject) {
@@ -11,7 +12,7 @@ exports.parseXMLAsync = function (xml) {
             if (err) {
                 reject(err)
             } else {
-                resolve()
+                resolve(content)
             }
         })
     })
@@ -21,11 +22,11 @@ function formatMessage(result) {
     var message = {}
 
     if (typeof result === 'object') {
-        var keys = Object.keys(result)
+        var keys = Object.keys(result)  //Object.keys拿到所有的key
 
         for (var i = 0; i < keys.length; i++) {
-            var item = result[keys[i]]
-            var key = keys[i]
+            var item = result[keys[i]]      //每个key对应的val
+            var key = keys[i]               //每个key
 
             if ((!item instanceof Array) || item.length === 0) {
                 continue
@@ -40,6 +41,7 @@ function formatMessage(result) {
                     message[key] = (val || '').trim()
                 }
             } else {
+                //数组
                 message[key] = []
 
                 for (var j = 0, k = item.length; j < k; j++) {
@@ -51,19 +53,7 @@ function formatMessage(result) {
     return message
 }
 
-exports.formatMessage = function (xml) {
-    return new Promise(function (resolve, reject) {
-        xml2js.parseString(xml, {
-            trim: true
-        }, function (err, content) {
-            if (err) {
-                reject(err)
-            } else {
-                resolve()
-            }
-        })
-    })
-}
+exports.formatMessage = formatMessage
 
 exports.tpl = function (content, message) {
     var info = {}
@@ -75,6 +65,7 @@ exports.tpl = function (content, message) {
         type = 'news'
     }
 
+    content = content || {}
     type = content.type || type
     info.content = content
     info.createTime = new Date().getTime()

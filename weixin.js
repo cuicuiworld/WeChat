@@ -1,4 +1,5 @@
 'use strict'
+// 回复策略
 
 exports.reply = function* (next) {
     var message = this.weixin //消息
@@ -25,12 +26,13 @@ exports.reply = function* (next) {
             //子菜单是不会上报的
         }
     } else if (message.MsgType === 'text') {
-        var content = message.content
+        console.log(message);
+        var content = message.Content
         var reply = '呀，你说的' + content + '太复杂了'
         if (content === '1') {
-            reply = '第一'
+            reply = '你好美'
         } else if (content === '2') {
-            reply = '第二'
+            reply = '你好漂亮'
         }
         this.body = reply
     }
