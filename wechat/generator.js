@@ -49,7 +49,7 @@ module.exports = function (options, handler) {
             // console.log(message+'//////')
 
             this.weixin = message
-            yield handler.call(this, next)
+            yield handler.call(this, next)  //handler是传参进来的
             wechat.reply.call(this)
         }
     }
